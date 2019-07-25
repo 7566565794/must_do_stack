@@ -1,43 +1,46 @@
-int _stack :: getMin()
+deque<int>dq;
+map<int,int>m;
+int size;
+LRUCache::LRUCache(int N)
 {
-   //Your code here
-   if(s.empty())
-        return -1;
-    return minEle;
+     //Your code here
+     dq.clear();
+     m.clear();
+     size = N;
 }
-/*returns poped element from stack*/
-int _stack ::pop()
+/*Sets the key x with value y in the LRU cache */
+void LRUCache::set(int x, int y) 
 {
-   //Your code here
-   if(s.empty())
-        return -1;
-    if(s.top()>minEle){
-        int t = s.top();
-        s.pop();
-        return t;
-    }
-    else if(s.top()<=minEle){
-        int t = s.top();
-        s.pop();
-        int k = minEle;
-        minEle = 2*minEle-t;
-        return k;
-    }
+     //Your code here
+     if(m.find(x)==m.end()){
+         if(dq.size()==size){
+             int temp = dq.back();
+             dq.pop_back();
+             m.erase(temp);
+         }
+     }
+     else{
+         deque<int>::iterator i = dq.begin();
+         while(*i!=x)
+            i++;
+         dq.erase(i);
+         m.erase(x);
+     }
+     dq.push_front(x);
+     m[x] = y;
+     
 }
-/*push element x into the stack*/
-void _stack::push(int x)
+/*Returns the value of the key x if 
+present else returns -1 */
+int LRUCache::get(int x)
 {
-   //Your code here
-   if(s.empty()){
-       s.push(x);
-       minEle = x;
-   }
-   else if(x>=minEle){
-       s.push(x);
-   }
-   else {
-       s.push(2*x-minEle);
-       minEle = x;
-   }
-   
+    //Your code here
+    if(m.find(x)==m.end())
+        return -1;
+    deque<int>::iterator i=dq.begin();
+    while(*i!=x)
+        i++;
+    dq.erase(i);
+    dq.push_front(x);
+    return m[x];
 }
